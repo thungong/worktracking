@@ -13,7 +13,7 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/your-username/work-tracker.git
+git clone https://github.com/thungong/worktracking.git
 cd work-tracker
 Set up a virtual environment:
 
