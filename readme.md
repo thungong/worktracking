@@ -1,76 +1,88 @@
-✅ Work Tracker - V2.42
-Work Tracker is a task management application built with Streamlit and Pandas, allowing users to create, track, and manage tasks efficiently. This app supports task creation, editing, tracking the start and end times, and archiving completed tasks.
+# Work Tracker - V2.43
 
-Features
-Add New Tasks: Input a task name, description, category, and priority.
-Start/Stop Tasks: Start tracking the time for a task or mark it as completed.
-Restart Task: Restart a completed task to continue working on it.
-Archive Task: Archive completed tasks by moving them to a separate archive file.
-Editable Summary Table: View and edit tasks dynamically from a summary table.
-Data Persistence: Saves and loads tasks from CSV files, allowing you to pick up where you left off.
-Installation
-Clone the repository:
+## Overview
 
-bash
-Copy code
-git clone https://github.com/thungong/worktracking.git
-cd work-tracker
-Set up a virtual environment:
+**Work Tracker - V2.43** is a Streamlit-based web application designed to help you track your daily tasks efficiently. The app allows you to create, start, stop, and archive tasks, all in a user-friendly interface. You can also track your task history by archiving completed tasks and accessing them later.
 
-bash
-Copy code
-python3 -m venv venv
-source venv/bin/activate  # For Windows: venv\Scripts\activate
-Install the dependencies:
+## Features
 
-bash
-Copy code
+- **Add New Task**: Easily add new tasks with descriptions, categories, and priorities.
+- **Task Status**: Tasks can be started, stopped, or archived once completed.
+- **Editable Summary**: View and edit tasks in a table format.
+- **Task Cards**: Tasks are presented in individual cards for easy readability.
+- **Archiving**: Completed tasks can be archived and stored in a separate CSV file.
+- **Download Archive**: Archived tasks can be downloaded in CSV format.
+
+## How to Use
+
+### 1. Adding a Task
+- Enter a task name, description, category, and priority on the sidebar.
+- Click on the **Add Task** button at the bottom of the sidebar to add the task.
+
+### 2. Starting a Task
+- Each task can be started by clicking the **Start Task** button. This will timestamp the start time.
+
+### 3. Stopping a Task
+- Once a task is in progress, click **Stop Task** to end the task. This will record the end time and total time spent.
+
+### 4. Archiving Completed Tasks
+- Once a task is marked as completed, an **Archive Task** button appears.
+- Clicking the **Archive Task** button will move the task to the archive and remove it from the active task list.
+
+### 5. Viewing Archived Tasks
+- Scroll down to the **Archived Tasks** section to view the list of archived tasks.
+- You can download the archived tasks in CSV format using the **Download Archive CSV** button.
+
+### 6. Editing Tasks
+- In the **Summary** section, you can edit task details directly in the table.
+- Any changes made will be saved automatically.
+
+## Categories
+
+The following categories are available for tasks:
+- **Administration**
+- **Project**
+- **Support-App**
+- **Support-Other**
+- **Development**
+- **Meetings**
+- **Research**
+- **Other**
+
+## Priority Levels
+
+You can assign one of the following priority levels to each task:
+- **Low**
+- **Medium**
+- **High**
+
+## Files
+
+- `tasks.csv`: Stores the active tasks with all details.
+- `archive.csv`: Stores the archived tasks that have been completed and removed from the active list.
+
+## Installation
+
+To set up the application locally:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/thungong/worktracking.git
+
+2. Navigate to the project directory:
+cd worktracking
+
+3. Install the required Python packages:
 pip install -r requirements.txt
-Run the app:
 
-bash
-Copy code
+4. Run the Streamlit application:
 streamlit run work_tracker.py
-How to Use
-Add a New Task
-Enter the Task Name, Task Description, select the Category and Priority from the dropdown menus.
-Click Add Task to save the task.
-Manage Tasks
-Each task is displayed as a card. You can:
-Start Task: Click the button to start tracking time for a task.
-Stop Task: Click the button to mark the task as completed and capture the end time.
-Restart Task: For tasks that are completed, this button restarts the task.
-Archive Task: This button will archive a completed task, moving it to an archive.csv file and removing it from the current task list.
-Edit Tasks in the Summary Table
-At the bottom of the app, you will see a Summary Table where you can:
-Edit task details (such as description, category, priority, etc.) directly within the table.
-Save any changes, which will automatically update the tasks.csv file.
-Task Status Workflow
-Not Started: The task has been added but not yet started.
-Active: The task is currently in progress and being tracked.
-Completed: The task has been completed and time tracking has stopped.
-Archived: The task has been archived and moved to archive.csv.
-Files
-tasks.csv: Stores the current tasks.
-archive.csv: Stores archived tasks.
-Customization
-Modify Task Categories
-You can modify the available task categories by updating the list in the code:
 
-python
-Copy code
-category = st.sidebar.selectbox("Category", ["Administration", "Project", "Support-App", "Support-Other", "Development", "Meetings", "Research", "Other"], key="category")
-Add More Features
-Notifications: You can implement notifications when tasks are due or past deadlines.
-Enhanced Reporting: Generate reports on time spent on different categories.
-Requirements
+## Requirements
 Python 3.7+
-Streamlit
-Pandas
-To install the required dependencies, use:
+Streamlit: pip install streamlit
+Pandas: pip install pandas
+For detailed requirements, refer to the requirements.txt file.
 
-bash
-Copy code
-pip install -r requirements.txt
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
+This project is licensed under the MIT License.

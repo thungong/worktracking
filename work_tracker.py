@@ -8,6 +8,7 @@ st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.43")
 
 # Sidebar title
 st.sidebar.title("✅ Work Tracker - V2.43")
+st.sidebar.markdown("**Developed by Aey - thungong.c@gmail.com**")
 
 # Define the paths for CSV files
 CSV_FILE = "tasks.csv"
