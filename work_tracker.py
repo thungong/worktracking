@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 # Streamlit app configuration
-st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.42")
+st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.43")
 
 # Sidebar title
-st.sidebar.title("✅ Work Tracker - V2.42")
+st.sidebar.title("✅ Work Tracker - V2.43")
 
 # Define the paths for CSV files
 CSV_FILE = "tasks.csv"
@@ -146,6 +146,20 @@ if not st.session_state['tasks'].empty:
     if edited_df is not None:
         st.session_state['tasks'] = edited_df
         save_tasks()
+
+# Toggle to show archived tasks
+show_archive = st.checkbox("Show Archived Tasks")
+
+# Show Archived Tasks when checkbox is selected
+if show_archive:
+    st.header("Archived Tasks")
+    if os.path.exists(ARCHIVE_FILE):
+        archive_df = pd.read_csv(ARCHIVE_FILE)
+        st.dataframe(archive_df)
+        # Add download button for archive
+        st.download_button("Download Archive CSV", data=archive_df.to_csv(index=False), file_name="archive.csv")
+    else:
+        st.write("No archived tasks yet.")
 
 # Custom CSS for styling the cards and buttons
 st.markdown(
