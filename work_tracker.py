@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 # Streamlit app configuration
-st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.43")
+st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.44")
 
 # Sidebar title
-st.sidebar.title("✅ Work Tracker - V2.43")
+st.sidebar.title("✅ Work Tracker - V2.44")
 st.sidebar.markdown("**Developed by Aey - thungong.c@gmail.com**")
 
 # Define the paths for CSV files
@@ -112,8 +112,11 @@ st.header("Your Tasks")
 if not st.session_state['tasks'].empty:
     for i, row in st.session_state['tasks'].iterrows():
         start_time_display = row['Start Time'] if pd.notnull(row['Start Time']) and row['Start Time'] != 'Not Set' else 'Not Started'
-        end_time_display = str(row['End Time']) if pd.notnull(row['End Time']) and row['End Time'] != 'Not Set' else ''
+        end_time_display = str(row['End Time']) if pd.notnull(row['End Time']) and row['End Time'] != 'Not Set' else None
         card_color = "#fff" if row['Status'] != "Active" else "#d3e2ff"
+
+        # Construct the HTML for the End Time
+        end_time_html = f'<p><strong>End Time:</strong> {end_time_display}</p>' if end_time_display else ''
 
         st.markdown(f"""
             <div class="card" style="background-color: {card_color};">
@@ -121,7 +124,7 @@ if not st.session_state['tasks'].empty:
                 <p><strong>Category:</strong> {row['Category']}</p>
                 <p><strong>Description:</strong> {row['Description']}</p>
                 <p><strong>Start Time:</strong> {start_time_display}</p>
-                {f'<p><strong>End Time:</strong> {end_time_display}</p>' if end_time_display else ''}
+                {end_time_html}
             </div>
         """, unsafe_allow_html=True)
 
