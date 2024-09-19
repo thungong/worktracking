@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 # Streamlit app configuration
-st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.44")
+st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.48")
 
 # Sidebar title
-st.sidebar.title("✅ Work Tracker - V2.44")
+st.sidebar.title("✅ Work Tracker - V2.48")
 st.sidebar.markdown("**Developed by Aey - thungong.c@gmail.com**")
 
 # Define the paths for CSV files
@@ -19,7 +19,7 @@ def load_tasks():
     if os.path.exists(CSV_FILE) and os.path.getsize(CSV_FILE) > 0:
         df = pd.read_csv(CSV_FILE)
         # Ensure that all required columns are present
-        required_columns = ['Task', 'Description', 'Category', 'Priority', 'Start Time', 'End Time', 'Total Time (hours:minutes)', 'Status']
+        required_columns = ['Task Number', 'Task', 'Description', 'Category', 'Priority', 'Start Time', 'End Time', 'Total Time (hours:minutes)', 'Status']
         for col in required_columns:
             if col not in df.columns:
                 df[col] = None
@@ -32,9 +32,18 @@ def load_tasks():
 def save_tasks():
     st.session_state['tasks'].to_csv(CSV_FILE, index=False)
 
+# Function to get the next task number
+def get_next_task_number():
+    if st.session_state['tasks'].empty:
+        return 1
+    else:
+        return st.session_state['tasks']['Task Number'].max() + 1
+
 # Function to add a new task
 def add_task():
+    next_task_number = get_next_task_number()  # Get the next task number
     new_task = pd.DataFrame({
+        'Task Number': [next_task_number],
         'Task': [st.session_state['task_name']],
         'Description': [st.session_state['description'] if st.session_state['description'] else "Not Set"],
         'Category': [st.session_state['category']],
@@ -94,7 +103,14 @@ def archive_task(task_index):
 if 'tasks' not in st.session_state:
     st.session_state['tasks'] = load_tasks()
 
-# Show input form
+# Initialize form fields if they don't exist in session state
+if 'task_name' not in st.session_state:
+    st.session_state['task_name'] = ""
+if 'description' not in st.session_state:
+    st.session_state['description'] = ""
+
+# Add Task form
+st.sidebar.header("Add a New Task")
 task_name = st.sidebar.text_input("Task Name", key="task_name")
 description = st.sidebar.text_area("Task Description", key="description")
 category = st.sidebar.selectbox("Category", ["Administration", "Project", "Support-App", "Support-Other", "Development", "Meetings", "Research", "Other"], key="category")
@@ -102,15 +118,18 @@ priority = st.sidebar.selectbox("Priority", ["Low", "Medium", "High"], key="prio
 
 # Sidebar for adding a new task at the bottom
 if st.sidebar.button("Add Task"):
-    if st.session_state.get("task_name", ""):
-        add_task()
+    if st.session_state['task_name']:
+        add_task()  # Ensure task name is filled
     else:
         st.sidebar.warning("Please enter a task name.")
 
+# Sort tasks: Active tasks first, then by Task Number
+sorted_tasks = st.session_state['tasks'].sort_values(by=['Status', 'Task Number'], ascending=[False, True])
+
 # Display tasks in a card-like format
 st.header("Your Tasks")
-if not st.session_state['tasks'].empty:
-    for i, row in st.session_state['tasks'].iterrows():
+if not sorted_tasks.empty:
+    for i, row in sorted_tasks.iterrows():
         start_time_display = row['Start Time'] if pd.notnull(row['Start Time']) and row['Start Time'] != 'Not Set' else 'Not Started'
         end_time_display = str(row['End Time']) if pd.notnull(row['End Time']) and row['End Time'] != 'Not Set' else None
         card_color = "#fff" if row['Status'] != "Active" else "#d3e2ff"
@@ -120,7 +139,7 @@ if not st.session_state['tasks'].empty:
 
         st.markdown(f"""
             <div class="card" style="background-color: {card_color};">
-                <h4>Task {i+1}: {row['Task']} ({row['Priority']} Priority)</h4>
+                <h4>Task {row['Task Number']}: {row['Task']} ({row['Priority']} Priority)</h4>
                 <p><strong>Category:</strong> {row['Category']}</p>
                 <p><strong>Description:</strong> {row['Description']}</p>
                 <p><strong>Start Time:</strong> {start_time_display}</p>
