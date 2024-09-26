@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 # Streamlit app configuration
-st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.48")
+st.set_page_config(page_icon="✅", page_title="Work Tracker - V2.50")
 
 # Sidebar title
-st.sidebar.title("✅ Work Tracker - V2.48")
+st.sidebar.title("✅ Work Tracker - V2.50")
 st.sidebar.markdown("**Developed by Aey - thungong.c@gmail.com**")
 
 # Define the paths for CSV files
@@ -34,10 +34,15 @@ def save_tasks():
 
 # Function to get the next task number
 def get_next_task_number():
-    if st.session_state['tasks'].empty:
+    # Ensure 'Task Number' contains only numeric values
+    numeric_task_numbers = pd.to_numeric(st.session_state['tasks']['Task Number'], errors='coerce')
+    max_task_number = numeric_task_numbers.max()
+    
+    # If no numeric task numbers are found, start from 1
+    if pd.isnull(max_task_number):
         return 1
-    else:
-        return st.session_state['tasks']['Task Number'].max() + 1
+    return int(max_task_number) + 1
+
 
 # Function to add a new task
 def add_task():
@@ -103,14 +108,7 @@ def archive_task(task_index):
 if 'tasks' not in st.session_state:
     st.session_state['tasks'] = load_tasks()
 
-# Initialize form fields if they don't exist in session state
-if 'task_name' not in st.session_state:
-    st.session_state['task_name'] = ""
-if 'description' not in st.session_state:
-    st.session_state['description'] = ""
-
-# Add Task form
-st.sidebar.header("Add a New Task")
+# Show input form
 task_name = st.sidebar.text_input("Task Name", key="task_name")
 description = st.sidebar.text_area("Task Description", key="description")
 category = st.sidebar.selectbox("Category", ["Administration", "Project", "Support-App", "Support-Other", "Development", "Meetings", "Research", "Other"], key="category")
@@ -118,17 +116,17 @@ priority = st.sidebar.selectbox("Priority", ["Low", "Medium", "High"], key="prio
 
 # Sidebar for adding a new task at the bottom
 if st.sidebar.button("Add Task"):
-    if st.session_state['task_name']:
-        add_task()  # Ensure task name is filled
+    if st.session_state.get("task_name", ""):
+        add_task()
     else:
         st.sidebar.warning("Please enter a task name.")
 
-# Sort tasks: Active tasks first, then by Task Number
-sorted_tasks = st.session_state['tasks'].sort_values(by=['Status', 'Task Number'], ascending=[False, True])
-
 # Display tasks in a card-like format
 st.header("Your Tasks")
-if not sorted_tasks.empty:
+if not st.session_state['tasks'].empty:
+    # Sort tasks: active tasks first, then by task number
+    sorted_tasks = st.session_state['tasks'].sort_values(by=['Status', 'Task Number'], ascending=[False, True])
+    
     for i, row in sorted_tasks.iterrows():
         start_time_display = row['Start Time'] if pd.notnull(row['Start Time']) and row['Start Time'] != 'Not Set' else 'Not Started'
         end_time_display = str(row['End Time']) if pd.notnull(row['End Time']) and row['End Time'] != 'Not Set' else None
